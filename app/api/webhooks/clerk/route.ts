@@ -1,7 +1,6 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { db } from "@/lib/prisma";
-
 // Clerk Webhook Endpoint
 export async function POST(req) {
   const payload = await req.text();
