@@ -65,27 +65,25 @@ export async function getUserOnboardingStatus() {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+  let user = null;
+  const MAX_RETRIES = 5;
+  const RETRY_DELAY = 500; // 0.5 seconds
 
-  if (!user) throw new Error("User not found");
-
-  try {
-    const user = await db.user.findUnique({
-      where: {
-        clerkUserId: userId,
-      },
-      select: {
-        industry: true,
-      },
+  // Retry up to 5 times, every 0.5s
+  for (let i = 0; i < MAX_RETRIES; i++) {
+    user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+      select: { industry: true },
     });
 
-    return {
-      isOnboarded: !!user?.industry,
-    };
-  } catch (error) {
-    console.error("Error checking onboarding status:", error);
-    throw new Error("Failed to check onboarding status");
+    if (user) break; // found user, stop retrying
+    await new Promise((res) => setTimeout(res, RETRY_DELAY));
   }
+
+  // If still no user after retries, throw error
+  if (!user) throw new Error("User not found after retries");
+
+  return {
+    isOnboarded: !!user.industry,
+  };
 }
