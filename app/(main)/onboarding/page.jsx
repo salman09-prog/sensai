@@ -14,20 +14,6 @@ const onboardingPage = async () => {
     redirect("/sign-in");
   }
 
-  // Try to get user from DB (retry pattern optional)
-  const dbUser = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
-
-  // If user not yet in DB (webhook delay)
-  if (!dbUser) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-      </div>
-    );
-  }
-
   // Now check if user is onboarded
   const { isOnboarded } = await getUserOnboardingStatus();
 
