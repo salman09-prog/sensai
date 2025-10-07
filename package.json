@@ -12,6 +12,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.31.9",
     "@clerk/themes": "^2.4.17",
+    "@google/genai": "^1.22.0",
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.2.1",
     "@prisma/client": "^6.15.0",

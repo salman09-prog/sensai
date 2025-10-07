@@ -51,7 +51,7 @@ export async function updateUser(data) {
 
                 return { industryInsight, updatedUser };
             },
-            { timeout: 10000 }
+            { timeout: 20000 }
         );
 
         return { success: true, ...result }; // ✅ always return on success
