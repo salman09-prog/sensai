@@ -59,7 +59,7 @@ const EntryForm = ({ type, entries, onChange }) => {
   const current = watch("current");
 
   const handleDelete = (index) => {
-    const newEntries = entries.filter((_,i)=>i !== index);
+    const newEntries = entries.filter((_, i) => i !== index);
     onChange(newEntries);
   };
 
@@ -100,69 +100,61 @@ const EntryForm = ({ type, entries, onChange }) => {
   return (
     <div className="space-y-4">
       <div className="space-y-4">
-        {entries.map((item, index) => {
-          return (
-            <Card key={index}>
-              <CardHeader
-                className={
-                  "flex flex-row items-center justify-between space-y-0 pb-2"
-                }
+        {entries.map((item, index) => (
+          <Card key={index}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                {item.title} @ {item.organization}
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="icon"
+                type="button"
+                onClick={() => handleDelete(index)}
               >
-                <CardTitle className={"text-sm font-medium"}>
-                  {item.title} @ {item.organization}
-                </CardTitle>
-                <Button
-                  variant={"outline"}
-                  size={"icon"}
-                  type="button"
-                  onClick={() => handleDelete(index)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  {item.current
-                    ? `${item.startDate} - Present`
-                    : `${item.startDate} - ${item.endDate}`}
-                </p>
-                <p className="mt-2 text-sm whitespace-pre-wrap">
-                  {item.description}
-                </p>
-              </CardContent>
-            </Card>
-          );
-        })}
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                {item.current
+                  ? `${item.startDate} - Present`
+                  : `${item.startDate} - ${item.endDate}`}
+              </p>
+              <p className="mt-2 text-sm whitespace-pre-wrap">
+                {item.description}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
+
       {isAdding && (
         <Card>
           <CardHeader>
             <CardTitle>Add {type}</CardTitle>
           </CardHeader>
-          <CardContent className={"space-y-4"}>
+          <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Input
                   placeholder="Title/Position"
                   {...register("title")}
-                  error={errors?.title}
+                  error={errors.title}
                 />
-                {errors?.title && (
-                  <p className="text-sm text-red-500">
-                    {errors?.title?.message}
-                  </p>
+                {errors.title && (
+                  <p className="text-sm text-red-500">{errors.title.message}</p>
                 )}
               </div>
-
               <div className="space-y-2">
                 <Input
                   placeholder="Organization/Company"
                   {...register("organization")}
-                  error={errors?.organization}
+                  error={errors.organization}
                 />
-                {errors?.organization && (
+                {errors.organization && (
                   <p className="text-sm text-red-500">
-                    {errors?.organization?.message}
+                    {errors.organization.message}
                   </p>
                 )}
               </div>
@@ -171,27 +163,26 @@ const EntryForm = ({ type, entries, onChange }) => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Input
-                  type={"month"}
+                  type="month"
                   {...register("startDate")}
-                  error={errors?.startDate}
+                  error={errors.startDate}
                 />
-                {errors?.startDate && (
+                {errors.startDate && (
                   <p className="text-sm text-red-500">
-                    {errors?.startDate?.message}
+                    {errors.startDate.message}
                   </p>
                 )}
               </div>
-
               <div className="space-y-2">
                 <Input
-                  type={"month"}
+                  type="month"
                   {...register("endDate")}
                   disabled={current}
-                  error={errors?.endDate}
+                  error={errors.endDate}
                 />
-                {errors?.endDate && (
+                {errors.endDate && (
                   <p className="text-sm text-red-500">
-                    {errors?.endDate?.message}
+                    {errors.endDate.message}
                   </p>
                 )}
               </div>
@@ -199,7 +190,7 @@ const EntryForm = ({ type, entries, onChange }) => {
 
             <div className="flex items-center space-x-2">
               <input
-                type={"checkbox"}
+                type="checkbox"
                 id="current"
                 {...register("current")}
                 onChange={(e) => {
@@ -215,21 +206,20 @@ const EntryForm = ({ type, entries, onChange }) => {
             <div className="space-y-2">
               <Textarea
                 placeholder={`Description of your ${type.toLowerCase()}`}
-                className={"h-32"}
+                className="h-32"
                 {...register("description")}
-                error={errors?.description}
+                error={errors.description}
               />
-              {errors?.description && (
+              {errors.description && (
                 <p className="text-sm text-red-500">
-                  {errors?.description?.message}
+                  {errors.description.message}
                 </p>
               )}
             </div>
-
             <Button
               type="button"
-              variant={"ghost"}
-              size={"sm"}
+              variant="ghost"
+              size="sm"
               onClick={handleImproveDescription}
               disabled={isImproving || !watch("description")}
             >
@@ -246,10 +236,10 @@ const EntryForm = ({ type, entries, onChange }) => {
               )}
             </Button>
           </CardContent>
-          <CardFooter className={"flex justify-end space-x-2"}>
+          <CardFooter className="flex justify-end space-x-2">
             <Button
               type="button"
-              variant={"outline"}
+              variant="outline"
               onClick={() => {
                 reset();
                 setIsAdding(false);
@@ -257,7 +247,6 @@ const EntryForm = ({ type, entries, onChange }) => {
             >
               Cancel
             </Button>
-
             <Button type="button" onClick={handleAdd}>
               <PlusCircle className="h-4 w-4 mr-2" />
               Add Entry
@@ -268,8 +257,8 @@ const EntryForm = ({ type, entries, onChange }) => {
 
       {!isAdding && (
         <Button
-          className={"w-full"}
-          variant={"outline"}
+          className="w-full"
+          variant="outline"
           onClick={() => setIsAdding(true)}
         >
           <PlusCircle className="h-4 w-4 mr-2" />
