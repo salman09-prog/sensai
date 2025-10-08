@@ -19,7 +19,6 @@ import { Loader2, PlusCircle, Sparkles, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { date } from "zod";
 
 const formatDisplayDate = (dateString) => {
   if (!dateString) return "";
@@ -97,6 +96,25 @@ const EntryForm = ({ type, entries, onChange }) => {
     });
   };
 
+  // 🔥 Dynamic placeholders based on section type
+  const placeholders = {
+    Experience: {
+      title: "Title / Position",
+      organization: "Organization / Company",
+    },
+    Project: {
+      title: "Project Name",
+      organization: "Tech Stack / Role",
+    },
+    Education: {
+      title: "Degree / Course",
+      organization: "Institution / University",
+    },
+  };
+
+  const { title: titlePlaceholder, organization: orgPlaceholder } =
+    placeholders[type.toLowerCase()] || placeholders.Experience;
+
   return (
     <div className="space-y-4">
       <div className="space-y-4">
@@ -138,7 +156,7 @@ const EntryForm = ({ type, entries, onChange }) => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Input
-                  placeholder="Title/Position"
+                  placeholder={titlePlaceholder}
                   {...register("title")}
                   error={errors.title}
                 />
@@ -148,7 +166,7 @@ const EntryForm = ({ type, entries, onChange }) => {
               </div>
               <div className="space-y-2">
                 <Input
-                  placeholder="Organization/Company"
+                  placeholder={orgPlaceholder}
                   {...register("organization")}
                   error={errors.organization}
                 />
