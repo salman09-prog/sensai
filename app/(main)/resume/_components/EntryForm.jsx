@@ -118,33 +118,147 @@ const EntryForm = ({ type, entries, onChange }) => {
   return (
     <div className="space-y-4">
       <div className="space-y-4">
-        {entries.map((item, index) => (
-          <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {item.title} @ {item.organization}
-              </CardTitle>
-              <Button
-                variant="outline"
-                size="icon"
-                type="button"
-                onClick={() => handleDelete(index)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {item.current
-                  ? `${item.startDate} - Present`
-                  : `${item.startDate} - ${item.endDate}`}
-              </p>
-              <p className="mt-2 text-sm whitespace-pre-wrap">
-                {item.description}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+        {entries.map((item, index) => {
+          const sectionType = item.type?.toLowerCase();
+
+          return (
+            <Card
+              key={index}
+              className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl p-4 mb-4"
+            >
+              {/* ===== Experience Section ===== */}
+              {sectionType === "experience" && (
+                <>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 font-medium">
+                        {item.organization}
+                      </p>
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      {item.current
+                        ? `${item.startDate} - Present`
+                        : `${item.startDate} - ${item.endDate}`}
+                    </span>
+                  </div>
+
+                  <ul className="list-disc ml-5 mt-2 text-sm text-gray-700 leading-relaxed">
+                    {item.description
+                      .split("\n")
+                      .filter(Boolean)
+                      .map((line, i) => (
+                        <li key={i}>{line}</li>
+                      ))}
+                  </ul>
+                </>
+              )}
+
+              {/* ===== Project Section ===== */}
+              {sectionType === "project" && (
+                <div>
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold text-blue-700">
+                      {item.title}
+                    </h3>
+                    <span className="text-xs text-gray-500">
+                      {item.startDate} - {item.endDate}
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-gray-600 font-medium mt-1">
+                    {item.organization}
+                  </p>
+
+                  <p className="mt-2 text-sm text-gray-700 leading-relaxed">
+                    {item.description}
+                  </p>
+
+                  {item.technologies && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {item.technologies.split(",").map((tech, i) => (
+                        <span
+                          key={i}
+                          className="text-xs bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded-full"
+                        >
+                          {tech.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ===== Education Section ===== */}
+              {sectionType === "education" && (
+                <div>
+                  <h3 className="text-lg font-semibold text-green-700">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 font-medium">
+                    {item.organization}
+                  </p>
+                  <span className="text-xs text-gray-500">
+                    {item.startDate} - {item.endDate}
+                  </span>
+                  <p className="mt-2 text-sm text-gray-700 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              )}
+
+              {/* ===== Skills Section ===== */}
+              {sectionType === "skills" && (
+                <div>
+                  <h3 className="text-lg font-semibold text-purple-700">
+                    Technical Skills
+                  </h3>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {item.description.split(",").map((skill, i) => (
+                      <span
+                        key={i}
+                        className="text-sm bg-purple-100 text-purple-700 font-medium px-3 py-1 rounded-full"
+                      >
+                        {skill.trim()}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ===== Default Section (Fallback) ===== */}
+              {!["experience", "project", "education", "skills"].includes(
+                sectionType
+              ) && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {item.title} @ {item.organization}
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    {item.startDate} - {item.endDate}
+                  </p>
+                  <p className="mt-2 text-sm text-gray-700 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              )}
+
+              {/* Delete Button */}
+              <div className="mt-3 flex justify-end">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  type="button"
+                  onClick={() => handleDelete(index)}
+                >
+                  <X className="h-4 w-4 text-gray-600" />
+                </Button>
+              </div>
+            </Card>
+          );
+        })}
       </div>
 
       {isAdding && (
