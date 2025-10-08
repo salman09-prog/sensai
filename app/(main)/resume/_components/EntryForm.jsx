@@ -98,22 +98,22 @@ const EntryForm = ({ type, entries, onChange }) => {
 
   // 🔥 Dynamic placeholders based on section type
   const placeholders = {
-    Experience: {
+    experience: {
       title: "Title / Position",
       organization: "Organization / Company",
     },
-    Project: {
+    project: {
       title: "Project Name",
       organization: "Tech Stack / Role",
     },
-    Education: {
+    education: {
       title: "Degree / Course",
       organization: "Institution / University",
     },
   };
 
   const { title: titlePlaceholder, organization: orgPlaceholder } =
-    placeholders[type.toLowerCase()] || placeholders.Experience;
+    placeholders[type.toLowerCase()] || placeholders.education;
 
   return (
     <div className="space-y-4">
