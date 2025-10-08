@@ -115,12 +115,12 @@ const EntryForm = ({ type, entries, onChange }) => {
   const { title: titlePlaceholder, organization: orgPlaceholder } =
     placeholders[type.toLowerCase()] || placeholders.education;
 
+  const sectionType = type.toLowerCase();
+
   return (
     <div className="space-y-4">
       <div className="space-y-4">
         {entries.map((item, index) => {
-          const sectionType = type.toLowerCase();
-
           return (
             <Card
               key={index}
