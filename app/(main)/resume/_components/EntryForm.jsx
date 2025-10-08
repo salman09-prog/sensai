@@ -119,7 +119,7 @@ const EntryForm = ({ type, entries, onChange }) => {
     <div className="space-y-4">
       <div className="space-y-4">
         {entries.map((item, index) => {
-          const sectionType = item.type?.toLowerCase();
+          const sectionType = type.toLowerCase();
 
           return (
             <Card
