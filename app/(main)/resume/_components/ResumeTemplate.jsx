@@ -198,9 +198,9 @@ export default function ResumeTemplate({ data, fullName }) {
         ))}
       </div>
 
-      {/* Skills Summary */}
+      {/* Skills Summary - Modified to take full width for each skill */}
       <SectionHeader>SKILLS SUMMARY</SectionHeader>
-      <div className="grid grid-cols-2 gap-y-1 text-[12px]">
+      <div className="space-y-1 text-[12px]">
         <div className="flex">
           <div className="font-semibold min-w-[92px] text-[#111]">Languages:</div>
           <div className="text-[#1a1a1a]">{skillsSummary.languages}</div>
@@ -217,7 +217,7 @@ export default function ResumeTemplate({ data, fullName }) {
           <div className="font-semibold min-w-[92px] text-[#111]">Platforms:</div>
           <div className="text-[#1a1a1a]">{skillsSummary.platforms}</div>
         </div>
-        <div className="flex col-span-2">
+        <div className="flex">
           <div className="font-semibold min-w-[92px] text-[#111]">Soft Skills:</div>
           <div className="text-[#1a1a1a]">{skillsSummary.softSkills}</div>
         </div>
