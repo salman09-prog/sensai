@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import EntryForm from "./EntryForm";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
 import ResumeTemplate from "./ResumeTemplate";
 
 // Do not import html2pdf at top-level
