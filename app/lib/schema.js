@@ -44,65 +44,30 @@ export const contactSchema = z.object({
 });
 
 export const entrySchema = z.object({
-  title: z.string().min(1, "Required"),
-  organization: z.string().min(1, "Required"),
-  startDate: z.string().optional(),
+  title: z.string().min(1, "Title is required"),
+  organization: z.string().min(1, "Organization is required"),
+  startDate: z.string().min(1, "Start date is required"),
   endDate: z.string().optional(),
-  description: z.string().min(1, "Required"),
-  current: z.boolean().optional(),
-  link: z.string().url().optional().or(z.literal("")).optional(),
-  period: z.string().optional(),
+  description: z.string().min(1, "description is required"),
+  current: z.boolean().default(false)
+}).refine((data) => {
+  if (!data.current && !data.endDate) {
+    return false;
+  }
+  return true;
+}, {
+  message: "End date is required unless this is your current position",
+  path: ["endDate"],
 });
 
 export const resumeSchema = z.object({
-  contactInfo: z.object({
-    email: z.string().email().optional(),
-    mobile: z.string().optional(),
-    linkedin: z.string().url().optional().or(z.literal("")).optional(),
-    github: z.string().url().optional().or(z.literal("")).optional(),
-  }),
-  education: z
-    .array(
-      z.object({
-        institution: z.string().min(1, "Institution is required"),
-        degree: z.string().optional(),
-        gpa: z.string().optional(),
-        location: z.string().optional(),
-        period: z.string().optional(),
-      })
-    )
-    .optional()
-    .default([]),
-  skillsSummary: z.object({
-    languages: z.string().optional(),
-    frameworks: z.string().optional(),
-    tools: z.string().optional(),
-    platforms: z.string().optional(),
-    softSkills: z.string().optional(),
-  }),
-  experience: z.array(entrySchema).optional().default([]),
-  projects: z
-    .array(
-      z.object({
-        title: z.string().min(1, "Title required"),
-        link: z.string().url().optional().or(z.literal("")).optional(),
-        period: z.string().optional(),
-        description: z.string().optional(),
-      })
-    )
-    .optional()
-    .default([]),
-  certificates: z
-    .array(
-      z.object({
-        title: z.string().min(1, "Title required"),
-        link: z.string().url().optional().or(z.literal("")).optional(),
-        period: z.string().optional(),
-        description: z.string().optional(),
-      })
-    )
-    .optional()
-    .default([]),
+  contactInfo: contactSchema,
+  summary: z.string().min(1, "Summary is required"),
+  skills: z.string().min(1, "Skills is required"),
+  experience: z.array(entrySchema),
+  education: z.array(entrySchema),
+  projects: z.array(entrySchema),
+  certificates: z.array(entrySchema).optional(),
 });
 
 export const coverLetterSchema = z.object({

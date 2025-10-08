@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { entrySchema } from "@/app/lib/schema";
-import { Sparkles, PlusCircle, X, Pencil, Save, Loader2 } from "lucide-react";
+import { Sparkles, PlusCircle, X, Loader2 } from "lucide-react";
 import { improveWithAI } from "@/actions/resume";
 import { toast } from "sonner";
 import useFetch from "@/hooks/use-fetch";
@@ -25,6 +25,14 @@ const formatDisplayDate = (dateString) => {
   if (!dateString) return "";
   const date = parse(dateString, "yyyy-MM", new Date());
   return format(date, "MMM yyyy");
+};
+
+// placeholders per type
+const placeholders = {
+  Experience: { title: "Title / Position", organization: "Company / Organization" },
+  Education: { title: "Degree / Course", organization: "Institution / University" },
+  Project: { title: "Project Title", organization: "Tech Stack / Role" },
+  Certificate: { title: "Certificate Name", organization: "Issued By" },
 };
 
 export function EntryForm({ type, entries, onChange }) {
@@ -57,9 +65,7 @@ export function EntryForm({ type, entries, onChange }) {
       startDate: formatDisplayDate(data.startDate),
       endDate: data.current ? "" : formatDisplayDate(data.endDate),
     };
-
     onChange([...entries, formattedEntry]);
-
     reset();
     setIsAdding(false);
   });
@@ -76,7 +82,6 @@ export function EntryForm({ type, entries, onChange }) {
     error: improveError,
   } = useFetch(improveWithAI);
 
-  // Add this effect to handle the improvement result
   useEffect(() => {
     if (improvedContent && !isImproving) {
       setValue("description", improvedContent);
@@ -87,7 +92,6 @@ export function EntryForm({ type, entries, onChange }) {
     }
   }, [improvedContent, improveError, isImproving, setValue]);
 
-  // Replace handleImproveDescription with this
   const handleImproveDescription = async () => {
     const description = watch("description");
     if (!description) {
@@ -97,35 +101,44 @@ export function EntryForm({ type, entries, onChange }) {
 
     await improveWithAIFn({
       current: description,
-      type: type.toLowerCase(), // 'experience', 'education', or 'project'
+      type: type.toLowerCase(),
     });
   };
 
   return (
     <div className="space-y-4">
-      <div className="space-y-4">
+      {/* ENTRIES LIST */}
+      <div className="grid gap-3">
         {entries.map((item, index) => (
-          <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {item.title} @ {item.organization}
-              </CardTitle>
+          <Card
+            key={index}
+            className="border border-gray-700 bg-black/30 hover:bg-black/40 transition-all"
+          >
+            <CardHeader className="flex flex-row items-start justify-between pb-1">
+              <div>
+                <CardTitle className="text-sm font-semibold leading-tight text-white">
+                  {item.title}
+                </CardTitle>
+                <p className="text-xs text-gray-400">{item.organization}</p>
+              </div>
               <Button
                 variant="outline"
                 size="icon"
                 type="button"
                 onClick={() => handleDelete(index)}
+                className="border-gray-600 hover:bg-red-500 hover:text-white transition-colors"
               >
                 <X className="h-4 w-4" />
               </Button>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
+
+            <CardContent className="pt-1 pb-2">
+              <p className="text-xs text-gray-400 italic">
                 {item.current
                   ? `${item.startDate} - Present`
                   : `${item.startDate} - ${item.endDate}`}
               </p>
-              <p className="mt-2 text-sm whitespace-pre-wrap">
+              <p className="mt-1 text-[13px] leading-snug text-gray-200 whitespace-pre-wrap">
                 {item.description}
               </p>
             </CardContent>
@@ -133,59 +146,55 @@ export function EntryForm({ type, entries, onChange }) {
         ))}
       </div>
 
+      {/* ADD NEW ENTRY FORM */}
       {isAdding && (
-        <Card>
+        <Card className="border border-gray-700 bg-black/40">
           <CardHeader>
-            <CardTitle>Add {type}</CardTitle>
+            <CardTitle className="text-white text-sm font-semibold">
+              Add {type}
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
                 <Input
-                  placeholder="Title/Position"
+                  placeholder={placeholders[type]?.title || "Title"}
                   {...register("title")}
-                  error={errors.title}
                 />
                 {errors.title && (
-                  <p className="text-sm text-red-500">{errors.title.message}</p>
+                  <p className="text-xs text-red-500">{errors.title.message}</p>
                 )}
               </div>
-              <div className="space-y-2">
+              <div>
                 <Input
-                  placeholder="Organization/Company"
+                  placeholder={placeholders[type]?.organization || "Organization"}
                   {...register("organization")}
-                  error={errors.organization}
                 />
                 {errors.organization && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-xs text-red-500">
                     {errors.organization.message}
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Input
-                  type="month"
-                  {...register("startDate")}
-                  error={errors.startDate}
-                />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Input type="month" {...register("startDate")} />
                 {errors.startDate && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-xs text-red-500">
                     {errors.startDate.message}
                   </p>
                 )}
               </div>
-              <div className="space-y-2">
+              <div>
                 <Input
                   type="month"
                   {...register("endDate")}
                   disabled={current}
-                  error={errors.endDate}
                 />
                 {errors.endDate && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-xs text-red-500">
                     {errors.endDate.message}
                   </p>
                 )}
@@ -195,37 +204,38 @@ export function EntryForm({ type, entries, onChange }) {
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
-                id="current"
+                id={`current-${type}`}
                 {...register("current")}
                 onChange={(e) => {
                   setValue("current", e.target.checked);
-                  if (e.target.checked) {
-                    setValue("endDate", "");
-                  }
+                  if (e.target.checked) setValue("endDate", "");
                 }}
               />
-              <label htmlFor="current">Current {type}</label>
+              <label htmlFor={`current-${type}`} className="text-sm text-gray-300">
+                Currently pursuing this {type.toLowerCase()}
+              </label>
             </div>
 
-            <div className="space-y-2">
+            <div>
               <Textarea
                 placeholder={`Description of your ${type.toLowerCase()}`}
-                className="h-32"
+                className="h-24 text-sm"
                 {...register("description")}
-                error={errors.description}
               />
               {errors.description && (
-                <p className="text-sm text-red-500">
+                <p className="text-xs text-red-500">
                   {errors.description.message}
                 </p>
               )}
             </div>
+
             <Button
               type="button"
               variant="ghost"
               size="sm"
               onClick={handleImproveDescription}
               disabled={isImproving || !watch("description")}
+              className="text-blue-400 hover:text-blue-500"
             >
               {isImproving ? (
                 <>
@@ -240,6 +250,7 @@ export function EntryForm({ type, entries, onChange }) {
               )}
             </Button>
           </CardContent>
+
           <CardFooter className="flex justify-end space-x-2">
             <Button
               type="button"
@@ -248,10 +259,15 @@ export function EntryForm({ type, entries, onChange }) {
                 reset();
                 setIsAdding(false);
               }}
+              className="border-gray-600 text-gray-300"
             >
               Cancel
             </Button>
-            <Button type="button" onClick={handleAdd}>
+            <Button
+              type="button"
+              onClick={handleAdd}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
               <PlusCircle className="h-4 w-4 mr-2" />
               Add Entry
             </Button>
@@ -259,9 +275,10 @@ export function EntryForm({ type, entries, onChange }) {
         </Card>
       )}
 
+      {/* ADD BUTTON */}
       {!isAdding && (
         <Button
-          className="w-full"
+          className="w-full border-gray-600 text-gray-300 hover:bg-gray-800"
           variant="outline"
           onClick={() => setIsAdding(true)}
         >
