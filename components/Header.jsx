@@ -75,7 +75,6 @@ const Header = async () => {
                     Interview Prep
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SignedIn>
